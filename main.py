@@ -277,6 +277,7 @@ async def get_session_messages(session_id: str):
     serializable_messages = []
     for msg in messages:
         if isinstance(msg.get("content"), list):
+            # Handle user messages with images
             content = []
             for part in msg["content"]:
                 if isinstance(part, dict) and part.get("type") == "image":
@@ -296,7 +297,28 @@ async def get_session_messages(session_id: str):
                 "role": msg["role"],
                 "content": content
             })
+        elif isinstance(msg.get("content"), dict):
+            # Handle assistant messages with generated images
+            content = msg["content"].copy()
+            if "generated_images" in content:
+                converted_images = []
+                for gen_img in content["generated_images"]:
+                    if "image_bytes" in gen_img:
+                        # Convert bytes to base64
+                        img_b64 = base64.b64encode(gen_img["image_bytes"]).decode('utf-8')
+                        converted_images.append({
+                            "image_data": img_b64,
+                            "mime_type": gen_img.get("mime_type", "image/jpeg")
+                        })
+                    else:
+                        converted_images.append(gen_img)
+                content["generated_images"] = converted_images
+            serializable_messages.append({
+                "role": msg["role"],
+                "content": content
+            })
         else:
+            # Handle simple text messages
             serializable_messages.append(msg)
     
     return {"messages": serializable_messages}
