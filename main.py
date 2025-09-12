@@ -79,17 +79,6 @@ def pil_to_base64(pil_image: Image.Image, format: str = "PNG") -> str:
     img_bytes = buffer.getvalue()
     return base64.b64encode(img_bytes).decode('utf-8')
 
-def clean_bytes_from_data(data):
-    """Recursively clean any bytes objects from data structure"""
-    if isinstance(data, bytes):
-        return base64.b64encode(data).decode('utf-8')
-    elif isinstance(data, dict):
-        return {key: clean_bytes_from_data(value) for key, value in data.items()}
-    elif isinstance(data, list):
-        return [clean_bytes_from_data(item) for item in data]
-    else:
-        return data
-
 def create_or_get_session(session_id: Optional[str], system_prompt: str, enable_image_generation: bool) -> tuple[str, ChatChain]:
     """Create new session or get existing one"""
     if session_id and session_id in chat_sessions:
@@ -281,17 +270,58 @@ async def get_session_messages(session_id: str):
     if session_id not in chat_sessions:
         raise HTTPException(status_code=404, detail="Session not found")
     
-    try:
-        chat_chain = chat_sessions[session_id]
-        messages = chat_chain.get_messages()
-        
-        # Use the cleaning function to recursively remove all bytes
-        clean_messages = clean_bytes_from_data(messages)
-        
-        return {"messages": clean_messages}
+    chat_chain = chat_sessions[session_id]
+    messages = chat_chain.get_messages()
     
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving messages: {str(e)}")
+    # Convert images in messages to base64 for JSON serialization
+    serializable_messages = []
+    for msg in messages:
+        if isinstance(msg.get("content"), list):
+            # Handle user messages with images
+            content = []
+            for part in msg["content"]:
+                if isinstance(part, dict) and part.get("type") == "image":
+                    if "image_bytes" in part:
+                        # Convert bytes to base64
+                        img_b64 = base64.b64encode(part["image_bytes"]).decode('utf-8')
+                        content.append({
+                            "type": "image",
+                            "image_data": img_b64,
+                            "mime_type": part.get("mime_type", "image/jpeg")
+                        })
+                    else:
+                        content.append(part)
+                else:
+                    content.append(part)
+            serializable_messages.append({
+                "role": msg["role"],
+                "content": content
+            })
+        elif isinstance(msg.get("content"), dict):
+            # Handle assistant messages with generated images
+            content = msg["content"].copy()
+            if "generated_images" in content:
+                converted_images = []
+                for gen_img in content["generated_images"]:
+                    if "image_bytes" in gen_img:
+                        # Convert bytes to base64
+                        img_b64 = base64.b64encode(gen_img["image_bytes"]).decode('utf-8')
+                        converted_images.append({
+                            "image_data": img_b64,
+                            "mime_type": gen_img.get("mime_type", "image/jpeg")
+                        })
+                    else:
+                        converted_images.append(gen_img)
+                content["generated_images"] = converted_images
+            serializable_messages.append({
+                "role": msg["role"],
+                "content": content
+            })
+        else:
+            # Handle simple text messages
+            serializable_messages.append(msg)
+    
+    return {"messages": serializable_messages}
 
 @app.get("/sessions")
 async def list_sessions():
