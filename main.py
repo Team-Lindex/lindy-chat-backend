@@ -70,8 +70,11 @@ class StyleGenerationResponse(BaseModel):
     prompt_used: str
 
 # Configuration - Use environment variables
-API_KEY = os.getenv('GOOGLE_API_KEY', 'AIzaSyAfMPu8d-uzzXQ-a2xaKxNMr_K9_oKDIVo')
+API_KEY = os.getenv('GOOGLE_API_KEY')
 MODEL = os.getenv('MODEL_NAME', 'gemini-2.5-flash-image-preview')
+
+if not API_KEY:
+    raise ValueError("GOOGLE_API_KEY environment variable is required")
 
 def get_genai_client():
     """Get Google GenAI client"""
