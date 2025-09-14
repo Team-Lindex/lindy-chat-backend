@@ -65,8 +65,8 @@ class StyleGenerationRequest(BaseModel):
     item_image_urls: List[str]
     item_categories: List[str]
     
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "base_image_url": "https://example.com/person.jpg",
                 "item_image_urls": [
@@ -77,6 +77,7 @@ class StyleGenerationRequest(BaseModel):
                 "item_categories": ["top", "pants", "scarf"]
             }
         }
+    }
 
 class StyleGenerationResponse(BaseModel):
     generated_image: str  # Base64 encoded image
@@ -480,10 +481,15 @@ async def generate_style_endpoint(request: StyleGenerationRequest):
         )
         
     except requests.RequestException as e:
+        print(f"Network error in generate_style_endpoint: {e}")
         raise HTTPException(status_code=400, detail=f"Error downloading images: {str(e)}")
     except ValueError as e:
+        print(f"Value error in generate_style_endpoint: {e}")
         raise HTTPException(status_code=500, detail=f"Error generating style: {str(e)}")
     except Exception as e:
+        print(f"Unexpected error in generate_style_endpoint: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 if __name__ == "__main__":
