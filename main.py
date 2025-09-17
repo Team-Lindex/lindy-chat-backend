@@ -11,7 +11,7 @@ import requests
 from io import BytesIO
 from PIL import Image
 
-from chat_api import ChatChain, pil_image_to_bytes, bytes_to_pil_image
+from chat_api import ChatChain, pil_image_to_bytes, bytes_to_pil_image, generate_style, get_function_info_as_string
 from google import genai
 
 app = FastAPI(title="AI Chat API", description="FastAPI server for AI chat with image support", version="1.0.0")
@@ -32,7 +32,7 @@ chat_sessions: Dict[str, ChatChain] = {}
 class ChatRequest(BaseModel):
     session_id: Optional[str] = None
     message: str
-    system_prompt: Optional[str] = "You are Lindy a personal style assistant from Lindex."
+    system_prompt: Optional[str] = None
     enable_image_generation: Optional[bool] = False
     generate_image: Optional[bool] = None
 
@@ -40,7 +40,7 @@ class ChatWithImagesRequest(BaseModel):
     session_id: Optional[str] = None
     message: str
     images: List[str]  # Base64 encoded images
-    system_prompt: Optional[str] = "You are Lindy a personal style assistant from Lindex."
+    system_prompt: Optional[str] = None
     enable_image_generation: Optional[bool] = False
     generate_image: Optional[bool] = None
 
@@ -71,7 +71,7 @@ class StyleGenerationResponse(BaseModel):
 
 # Configuration - Use environment variables
 API_KEY = os.getenv('GOOGLE_API_KEY')
-MODEL = os.getenv('MODEL_NAME', 'gemini-2.5-flash-image-preview')
+MODEL = os.getenv('MODEL_NAME', 'gemini-2.5-flash')
 
 if not API_KEY:
     raise ValueError("GOOGLE_API_KEY environment variable is required")
@@ -79,6 +79,59 @@ if not API_KEY:
 def get_genai_client():
     """Get Google GenAI client"""
     return genai.Client(api_key=API_KEY)
+
+def get_function_registry():
+    """Get the function registry for tool calls"""
+    return {
+        'generate_style': generate_style
+    }
+
+def get_default_system_prompt():
+    """Get the default system prompt with tool descriptions"""
+    tool_desc = get_function_info_as_string(generate_style)
+
+    return f"""
+<instructions>
+You are Lindy a personal style assistant from Lindex. You suggest styles for your client given the data in their wordrobe:
+{{
+  "success": true,
+  "data": [
+    {{
+      "id": "66c360da0182f6e6f25caba4",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3001152_7697_PS_MF/gra-topp-i-ullblandning?w=1200&h=1600&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba9",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3007855_9608_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba6",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3009387_8494_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba8",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3007732_8117_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "jacket"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba5",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3002899_80_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bag"
+    }}
+  ],
+  "occasion": "Business meeting",
+  "description": "The selected outfit includes a sophisticated top paired with neutral bottoms, which is ideal for a professional setting. A sleek jacket adds a layer of formality, while a subtle accessory complements the ensemble. The structured bag is perfect for carrying essentials to the meeting."
+}}
+You can dress you client in the clothes you recommend by generating an image using the style_generatin tool. Here is the base image url: https://i8.amplience.net/i/Lindex/8362685_1281_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c
+IMPORTANT: You MUST ALWAYS use tools in a SINGLE JSON object at the end of your output inside <tools></tools>, include only the tools you want to call.
+</instructions>
+<tools>
+{tool_desc}
+</tools>
+"""
 
 def base64_to_pil(base64_string: str) -> Image.Image:
     """Convert base64 string to PIL Image"""
@@ -96,15 +149,18 @@ def create_or_get_session(session_id: Optional[str], system_prompt: str, enable_
     """Create new session or get existing one"""
     if session_id and session_id in chat_sessions:
         return session_id, chat_sessions[session_id]
-    
+
     # Create new session
     new_session_id = session_id or str(uuid.uuid4())
     client = get_genai_client()
+    function_registry = get_function_registry()
+
     chat_chain = ChatChain(
         model=MODEL,
         client=client,
         system_prompt=system_prompt,
-        enable_image_generation=enable_image_generation
+        enable_image_generation=enable_image_generation,
+        function_registry=function_registry
     )
     chat_sessions[new_session_id] = chat_chain
     return new_session_id, chat_chain
@@ -121,9 +177,12 @@ async def health_check():
 async def chat(request: ChatRequest):
     """Send a text message to the AI"""
     try:
+        # Use default system prompt if none provided
+        system_prompt = request.system_prompt or get_default_system_prompt()
+
         session_id, chat_chain = create_or_get_session(
             request.session_id,
-            request.system_prompt,
+            system_prompt,
             request.enable_image_generation
         )
         
@@ -155,9 +214,12 @@ async def chat(request: ChatRequest):
 async def chat_with_images(request: ChatWithImagesRequest):
     """Send a message with images to the AI"""
     try:
+        # Use default system prompt if none provided
+        system_prompt = request.system_prompt or get_default_system_prompt()
+
         session_id, chat_chain = create_or_get_session(
             request.session_id,
-            request.system_prompt,
+            system_prompt,
             request.enable_image_generation
         )
         
@@ -204,16 +266,19 @@ async def chat_with_images(request: ChatWithImagesRequest):
 async def chat_with_file_upload(
     message: str = Form(...),
     session_id: Optional[str] = Form(None),
-    system_prompt: str = Form("You are Lindy a personal style assistant from Lindex."),
+    system_prompt: Optional[str] = Form(None),
     enable_image_generation: bool = Form(False),
     generate_image: Optional[bool] = Form(None),
     files: List[UploadFile] = File(...)
 ):
     """Send a message with uploaded image files to the AI"""
     try:
+        # Use default system prompt if none provided
+        final_system_prompt = system_prompt or get_default_system_prompt()
+
         session_id, chat_chain = create_or_get_session(
             session_id,
-            system_prompt,
+            final_system_prompt,
             enable_image_generation
         )
         
