@@ -658,36 +658,463 @@ system_prompt = f"""
 You are Lindy a personal style assistant from Lindex. You suggest styles for your client given the data in their wordrobe:
 {{
   "success": true,
+  "count": 44,
   "data": [
     {{
-      "id": "66c360da0182f6e6f25caba4",
-      "imageurl": "https://i8.amplience.net/i/Lindex/3001152_7697_PS_MF/gra-topp-i-ullblandning?w=1200&h=1600&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c
-",
-      "type": "top"
+      "_id": "68c3e50400f82f6d925ca6a7",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3006801_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [
+        "Party",
+        "Casual"
+      ],
+      "createdAt": "2025-09-12T09:16:52.040Z",
+      "updatedAt": "2025-09-17T06:56:38.556Z",
+      "__v": 0
     }},
     {{
-      "id": "66c360da0182f6e6f25caba9",
-      "imageurl": "https://i8.amplience.net/i/Lindex/3007855_9608_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
-      "type": "bottoms"
+      "_id": "68c3e50400f82f6d925ca6a9",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3004292_6940_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [
+        "Business"
+      ],
+      "createdAt": "2025-09-12T09:16:52.051Z",
+      "updatedAt": "2025-09-17T10:53:31.511Z",
+      "__v": 0
     }},
     {{
-      "id": "66c360da0182f6e6f25caba6",
-      "imageurl": "https://i8.amplience.net/i/Lindex/3009387_8494_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
-      "type": "accessory"
+      "_id": "68c3e50400f82f6d925ca6ab",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3001152_8652_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [
+        "Party"
+      ],
+      "createdAt": "2025-09-12T09:16:52.063Z",
+      "updatedAt": "2025-09-17T11:37:38.746Z",
+      "__v": 0
     }},
     {{
-      "id": "66c360da0182f6e6f25caba8",
-      "imageurl": "https://i8.amplience.net/i/Lindex/3007732_8117_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
-      "type": "jacket"
+      "_id": "68c3e50400f82f6d925ca6ad",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3001152_7697_PS_F/gra-topp-i-ullblandning?w=1200&h=1600&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.076Z",
+      "updatedAt": "2025-09-12T09:16:52.076Z",
+      "__v": 0
     }},
     {{
-      "id": "66c360da0182f6e6f25caba5",
-      "imageurl": "https://i8.amplience.net/i/Lindex/3002899_80_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
-      "type": "bag"
+      "_id": "68c3e50400f82f6d925ca6af",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/8362682_8704_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.087Z",
+      "updatedAt": "2025-09-12T09:16:52.087Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6b1",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007769_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.099Z",
+      "updatedAt": "2025-09-12T09:16:52.099Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6b3",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007653_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.111Z",
+      "updatedAt": "2025-09-12T09:16:52.111Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6b5",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007370_9618_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.127Z",
+      "updatedAt": "2025-09-12T09:16:52.127Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6b7",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007715_70_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.140Z",
+      "updatedAt": "2025-09-12T09:16:52.140Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6b9",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007598_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.151Z",
+      "updatedAt": "2025-09-12T09:16:52.151Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6bb",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3004091_8671_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.163Z",
+      "updatedAt": "2025-09-12T09:16:52.163Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6bd",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007389_9609_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.176Z",
+      "updatedAt": "2025-09-12T09:16:52.176Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6bf",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3002147_9608_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.186Z",
+      "updatedAt": "2025-09-12T09:16:52.186Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6c1",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3008624_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.197Z",
+      "updatedAt": "2025-09-12T09:16:52.197Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6c3",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/8624794_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.210Z",
+      "updatedAt": "2025-09-12T09:16:52.210Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6c5",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007926_9608_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.226Z",
+      "updatedAt": "2025-09-12T09:16:52.226Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6c7",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007668_9612_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "top\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.237Z",
+      "updatedAt": "2025-09-12T09:16:52.237Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6c9",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007855_9608_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.248Z",
+      "updatedAt": "2025-09-12T09:16:52.248Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6cb",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007539_9612_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.261Z",
+      "updatedAt": "2025-09-12T09:16:52.261Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6cd",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007688_8600_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [
+        "Business"
+      ],
+      "createdAt": "2025-09-12T09:16:52.274Z",
+      "updatedAt": "2025-09-17T10:53:43.778Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6cf",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007685_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.285Z",
+      "updatedAt": "2025-09-12T09:16:52.285Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6d1",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3001715_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.298Z",
+      "updatedAt": "2025-09-12T09:16:52.298Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6d3",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3004972_7862_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.310Z",
+      "updatedAt": "2025-09-12T09:16:52.310Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6d5",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3008183_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.322Z",
+      "updatedAt": "2025-09-12T09:16:52.322Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6d7",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3000038_9609_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "dress\r",
+      "tags": [
+        "tag1"
+      ],
+      "createdAt": "2025-09-12T09:16:52.334Z",
+      "updatedAt": "2025-09-17T08:33:15.397Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6d9",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3008422_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "dress\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.347Z",
+      "updatedAt": "2025-09-12T09:16:52.347Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6db",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3006780_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "dress\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.359Z",
+      "updatedAt": "2025-09-12T09:16:52.359Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6dd",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3008435_2659_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "dress\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.374Z",
+      "updatedAt": "2025-09-12T09:16:52.374Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6df",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007732_8117_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "jacket\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.387Z",
+      "updatedAt": "2025-09-12T09:16:52.387Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6e1",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3006623_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "jacket\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.399Z",
+      "updatedAt": "2025-09-12T09:16:52.399Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6e3",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007344_7199_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "jacket\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.410Z",
+      "updatedAt": "2025-09-12T09:16:52.410Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6e5",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007917_9609_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "jacket\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.423Z",
+      "updatedAt": "2025-09-12T09:16:52.423Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6e7",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/8464557_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bag\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.436Z",
+      "updatedAt": "2025-09-12T09:16:52.436Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6e9",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3007236_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bag\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.448Z",
+      "updatedAt": "2025-09-12T09:16:52.448Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6eb",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3002899_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bag\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.460Z",
+      "updatedAt": "2025-09-12T09:16:52.460Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6ed",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3009387_8494_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [
+        "Business"
+      ],
+      "createdAt": "2025-09-12T09:16:52.471Z",
+      "updatedAt": "2025-09-17T10:54:03.183Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6ef",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3006898_10_PS_B?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.483Z",
+      "updatedAt": "2025-09-12T09:16:52.483Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6f1",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3009599_10_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.494Z",
+      "updatedAt": "2025-09-12T09:16:52.494Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6f3",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3010226_10_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.507Z",
+      "updatedAt": "2025-09-12T09:16:52.507Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6f5",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3009018_10_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.519Z",
+      "updatedAt": "2025-09-12T09:16:52.519Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6f7",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3006558_9072_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.531Z",
+      "updatedAt": "2025-09-12T09:16:52.531Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6f9",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3008947_9806_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.543Z",
+      "updatedAt": "2025-09-12T09:16:52.543Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6fb",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/7202897_80_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory\r",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.555Z",
+      "updatedAt": "2025-09-12T09:16:52.555Z",
+      "__v": 0
+    }},
+    {{
+      "_id": "68c3e50400f82f6d925ca6fd",
+      "userId": 1,
+      "imageUrl": "https://i8.amplience.net/i/Lindex/3006955_250_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory",
+      "tags": [],
+      "createdAt": "2025-09-12T09:16:52.568Z",
+      "updatedAt": "2025-09-12T09:16:52.568Z",
+      "__v": 0
     }}
   ],
-  "occasion": "Business meeting",
-  "description": "The selected outfit includes a sophisticated top paired with neutral bottoms, which is ideal for a professional setting. A sleek jacket adds a layer of formality, while a subtle accessory complements the ensemble. The structured bag is perfect for carrying essentials to the meeting."
+  "fromCache": true
 }}
 You always dress you client in the clothes you recommend by generating an image using the style_generatin tool. Here is your clients base image url: https://i8.amplience.net/i/Lindex/3003049_1753_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c
 IMPORTANT: You MUST ALWAYS use tools in a SINGLE JSON object at the end of your output inside <tools></tools>, include only the tools you want to call.

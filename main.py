@@ -49,6 +49,7 @@ class ChatResponse(BaseModel):
     response: str
     generated_images: Optional[List[str]] = None  # Base64 encoded images
     message_count: int
+    items: Optional[dict] = None
 
 class SessionInfo(BaseModel):
     session_id: str
@@ -135,17 +136,20 @@ async def chat(request: ChatRequest):
         
         # Get generated images if any
         generated_images_b64 = None
+        items = None
         last_generated = chat_chain.get_last_generated_images()
         if last_generated:
             generated_images_b64 = [
                 pil_to_base64(img) for img in last_generated
             ]
+            items = dict(zip(chat_chain.get_tool_calls()['generate_style']['item_category_list'], chat_chain.get_tool_calls()['generate_style']['item_image_urls']))
         
         return ChatResponse(
             session_id=session_id,
             response=response_text,
             generated_images=generated_images_b64,
-            message_count=len(chat_chain.get_messages())
+            message_count=len(chat_chain.get_messages()),
+            items = items
         )
         
     except Exception as e:
