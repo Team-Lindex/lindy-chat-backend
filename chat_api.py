@@ -5,7 +5,14 @@ import json
 import re
 import base64
 from io import BytesIO
-from typing import List, Dict, Any, Optional, Union, Tuple
+from typing import List, Dict, Any, Optional, Union, Tuple, Callable, get_type_hints
+import inspect
+import re
+import requests
+
+api_key = 'AIzaSyCe8-OJT-zr8HNSbUnnXcAjGJS2OIUsi14'
+
+client = genai.Client(api_key=api_key)
 
 def pil_image_to_bytes(pil_image: Image.Image, format: str = "JPEG") -> tuple[bytes, str]:
     """
@@ -49,6 +56,154 @@ def bytes_to_pil_image(image_bytes: bytes) -> Image.Image:
         PIL Image object
     """
     return Image.open(BytesIO(image_bytes))
+
+def get_function_info_as_string(func):
+    """
+    Get function information as a JSON string in the specified format.
+    
+    Returns:
+        str: JSON string with function details
+    """
+    # Get function name
+    func_name = func.__name__
+    
+    # Get docstring for description
+    description = func.__doc__.strip() if func.__doc__ else "No description available"
+    
+    # Get type hints
+    hints = get_type_hints(func)
+    
+    # Get signature for parameters
+    sig = inspect.signature(func)
+    
+    # Build the result dictionary
+    result = {
+        func_name: {
+            "tool_description": description
+        }
+    }
+    
+    # Add parameters with their types
+    for param_name, param in sig.parameters.items():
+        param_type = hints.get(param_name, "Any")
+        
+        # Convert type to string representation
+        if hasattr(param_type, '__name__'):
+            type_str = param_type.__name__
+        else:
+            type_str = str(param_type)
+        
+        # Add default value if exists
+        if param.default != param.empty:
+            type_str += f" (default: {param.default})"
+        
+        result[func_name][param_name] = type_str
+    
+    # Convert to JSON string
+    return json.dumps(result, indent=2)
+
+
+def generate_style(base_image_of_person_url: str, item_image_urls: list[str], item_category_list: list[str], client=client)-> Image.Image:
+  
+  """Function that generate picture of the person in the base image with the clothes and accessories given."""
+  
+#   Example usage:
+#   {
+#     "base_image_url":
+#   "https://i8.amplience.net/i/Lindex/3003139_80_PS_MF/menstrosa-med-medium-absorption-hog-midja-female-engineering?w=1200&h=1600&fmt=auto&qlt=90&fmt.jp2.qlt=50&sm=c",
+#     "item_image_urls": [
+#       "https://i8.amplience.net/i/Lindex/3007143_9618_PS_MF/brun-finstickad-topp?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+# "https://i8.amplience.net/i/Lindex/3000057_7268_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+# "https://i8.amplience.net/i/Lindex/3007476_8665_PS_F?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c"
+#     ],
+#     "item_categories": [
+#       "top", "bottom", "accessory"
+#     ]
+#   }
+
+  
+
+
+  headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+  }
+
+  item_image_urls.insert(0, base_image_of_person_url)
+
+  image_list = []
+  for image_url in item_image_urls:
+    response = requests.get(image_url, headers=headers)
+
+    # Create an in-memory binary stream from the downloaded content
+    image_bytes = BytesIO(response.content)
+    pil_image = Image.open(image_bytes)
+    image_list.append(pil_image)
+
+  prompt = (
+      "Please dress the person in the first picture with "
+  )
+
+  for item in range(len(item_category_list)):
+    prompt += f"the {item_category_list[item]} from picture {item + 2} "
+
+  image_list.insert(0, prompt)
+
+  response = client.models.generate_content(
+      model="gemini-2.5-flash-image-preview",
+      contents=image_list,
+  )
+
+  for part in response.candidates[0].content.parts:
+      if part.text is not None:
+          print(part.text)
+      elif part.inline_data is not None:
+          image = Image.open(BytesIO(part.inline_data.data))
+
+  return image
+
+
+def execute_function_with_args(function_data: Dict[str, Dict[str, Any]], function_registry: Dict[str, Callable] = None):
+    """
+    Execute a function with provided arguments from a dictionary.
+    
+    Args:
+        function_data: Dictionary with function name as key and arguments as nested dict
+        function_registry: Optional dictionary of available functions {name: function}
+    
+    Returns:
+        The result of the function execution
+    """
+    
+    if not function_data:
+        raise ValueError("No function data provided")
+    
+    # Get the function name and arguments
+    function_name = list(function_data.keys())[0]
+    arguments = function_data[function_name]
+    
+    # Find the function
+    target_function = None
+    
+    if function_registry and function_name in function_registry:
+        target_function = function_registry[function_name]
+    else:
+        # Try to find in globals
+        if function_name in globals():
+            target_function = globals()[function_name]
+        else:
+            raise ValueError(f"Function '{function_name}' not found")
+    
+    if not callable(target_function):
+        raise ValueError(f"'{function_name}' is not callable")
+    
+    try:
+        # Execute the function with the provided arguments
+        result = target_function(**arguments)
+        return result
+    except TypeError as e:
+        raise ValueError(f"Error calling function '{function_name}': {e}")
+    except Exception as e:
+        raise RuntimeError(f"Error executing function '{function_name}': {e}")
 
 def call_llm(model, client, system_prompt, messages, enable_image_generation=False):
     """
@@ -207,11 +362,16 @@ class ChatChain:
         Always converts to bytes format for consistency.
         
         Args:
-            img: Image in various formats
+            img: Image in various formats (PIL Image, file path, URL, dict with image data, or raw bytes)
         
         Returns:
             Dict with image_bytes and mime_type
         """
+        # Headers for URL requests
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
         if isinstance(img, Image.Image):
             # PIL Image - convert to bytes
             image_bytes, mime_type = pil_image_to_bytes(img)
@@ -221,23 +381,41 @@ class ChatChain:
                 "mime_type": mime_type
             }
         elif isinstance(img, str):
-            # File path - load and convert to bytes
-            pil_img = Image.open(img)
-            # Determine format from file extension
-            format = "JPEG"
-            if img.lower().endswith('.png'):
-                format = "PNG"
-            elif img.lower().endswith('.webp'):
-                format = "WEBP"
-            elif img.lower().endswith('.gif'):
-                format = "GIF"
-            
-            image_bytes, mime_type = pil_image_to_bytes(pil_img, format)
-            return {
-                "type": "image",
-                "image_bytes": image_bytes,
-                "mime_type": mime_type
-            }
+            # Check if it's a URL or file path
+            if img.startswith('http://') or img.startswith('https://'):
+                # URL - download and convert to bytes
+                response = requests.get(img, headers=headers)
+                response.raise_for_status()  # Raise an exception for bad status codes
+                
+                # Create PIL image from downloaded content
+                image_bytes_io = BytesIO(response.content)
+                pil_img = Image.open(image_bytes_io)
+                
+                # Convert to bytes with appropriate format
+                image_bytes, mime_type = pil_image_to_bytes(pil_img)
+                return {
+                    "type": "image",
+                    "image_bytes": image_bytes,
+                    "mime_type": mime_type
+                }
+            else:
+                # File path - load and convert to bytes
+                pil_img = Image.open(img)
+                # Determine format from file extension
+                format = "JPEG"
+                if img.lower().endswith('.png'):
+                    format = "PNG"
+                elif img.lower().endswith('.webp'):
+                    format = "WEBP"
+                elif img.lower().endswith('.gif'):
+                    format = "GIF"
+                
+                image_bytes, mime_type = pil_image_to_bytes(pil_img, format)
+                return {
+                    "type": "image",
+                    "image_bytes": image_bytes,
+                    "mime_type": mime_type
+                }
         elif isinstance(img, dict):
             # Already in dict format
             if "image_uri" in img:
@@ -273,6 +451,7 @@ class ChatChain:
             images: Optional list of images. Each can be:
                 - PIL Image object
                 - Path to image file (str)
+                - URL to image (str starting with http:// or https://)
                 - Dict with image data: {"image_bytes": bytes, "mime_type": str}
                 - Dict with GCS URI: {"image_uri": str, "mime_type": str}
                 - Raw bytes
@@ -325,20 +504,52 @@ class ChatChain:
             enable_image_generation=enable_gen
         )
         
+        # Check for tool calls in the response
+        tool_calls = extract_tools_json(response_text)
+        tool_generated_images = []
+        
+        if tool_calls:
+            # Create function registry with available functions
+            function_registry = {
+                'generate_style': generate_style
+            }
+            
+            try:
+                # Execute the tool call
+                tool_result = execute_function_with_args(tool_calls, function_registry)
+                
+                # Check if the result is a PIL Image (from generate_style)
+                if isinstance(tool_result, Image.Image):
+                    # Convert PIL image to the format used for generated images
+                    image_bytes, mime_type = pil_image_to_bytes(tool_result)
+                    tool_generated_images.append({
+                        "image_bytes": image_bytes,
+                        "mime_type": mime_type
+                    })
+                    print(f"Tool execution successful: Generated image from {list(tool_calls.keys())[0]}")
+                else:
+                    print(f"Tool execution result: {tool_result}")
+            
+            except Exception as e:
+                print(f"Error executing tool call: {e}")
+        
+        # Combine LLM generated images with tool generated images
+        all_generated_images = generated_images + tool_generated_images
+        
         # Store the response
-        if generated_images:
+        if all_generated_images:
             # Store response with generated images
             self.messages.append({
                 "role": "assistant",
                 "content": {
                     "text": response_text,
-                    "generated_images": generated_images
+                    "generated_images": all_generated_images
                 }
             })
             # Add to generated images history
             self.generated_images_history.append({
                 "message_index": len(self.messages) - 1,
-                "images": generated_images
+                "images": all_generated_images
             })
         else:
             # Simple text response
@@ -347,35 +558,9 @@ class ChatChain:
                 "content": response_text
             })
         
+        # Remove tool tags from the response text for cleaner output
+        response_text = re.sub(r'<tools>.*?</tools>', '', response_text, flags=re.DOTALL)
         return response_text
-    
-    def chat_with_pil_images(self, message: str, pil_images: List[Image.Image], generate_image=None):
-        """
-        Convenience method for chatting with PIL Image objects.
-        
-        Args:
-            message: Text message
-            pil_images: List of PIL Image objects
-            generate_image: Whether to enable image generation for this response
-        
-        Returns:
-            str: Assistant's response
-        """
-        return self.chat(message, images=pil_images, generate_image=generate_image)
-    
-    def chat_with_image_paths(self, message: str, image_paths: List[str], generate_image=None):
-        """
-        Convenience method for chatting with image file paths.
-        
-        Args:
-            message: Text message
-            image_paths: List of paths to image files
-            generate_image: Whether to enable image generation for this response
-        
-        Returns:
-            str: Assistant's response
-        """
-        return self.chat(message, images=image_paths, generate_image=generate_image)
     
     def get_messages(self):
         """Return messages in OpenAI-like format for compatibility"""
@@ -461,12 +646,53 @@ class ChatChain:
     
     def get_last_response(self):
         """Get the last response, handling tool calls if present"""
-        tool_calls = self.get_tool_calls()
-        if tool_calls and 'action' in tool_calls:
-            if tool_calls['action']['action'] == 'respond':
-                last_response = tool_calls['action']['response']
-            else:
-                last_response = None
-        else:
-            last_response = self.get_last_raw_response()
+        last_response = chat.get_messages()[-1]
+        last_response = re.sub(r'<tools>.*?</tools>', '', last_response, flags=re.DOTALL)
         return last_response
+
+tool_desc = get_function_info_as_string(generate_style)
+
+# Example usage with system prompt
+system_prompt = f"""
+<instructions>
+You are Lindy a personal style assistant from Lindex. You suggest styles for your client given the data in their wordrobe:
+{{
+  "success": true,
+  "data": [
+    {{
+      "id": "66c360da0182f6e6f25caba4",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3001152_7697_PS_MF/gra-topp-i-ullblandning?w=1200&h=1600&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c
+",
+      "type": "top"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba9",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3007855_9608_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bottoms"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba6",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3009387_8494_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "accessory"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba8",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3007732_8117_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "jacket"
+    }},
+    {{
+      "id": "66c360da0182f6e6f25caba5",
+      "imageurl": "https://i8.amplience.net/i/Lindex/3002899_80_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c",
+      "type": "bag"
+    }}
+  ],
+  "occasion": "Business meeting",
+  "description": "The selected outfit includes a sophisticated top paired with neutral bottoms, which is ideal for a professional setting. A sleek jacket adds a layer of formality, while a subtle accessory complements the ensemble. The structured bag is perfect for carrying essentials to the meeting."
+}}
+You can dress you client in the clothes you recommend by generating an image using the style_generatin tool. Here is the base image url: https://i8.amplience.net/i/Lindex/8362685_1281_PS_MF?w=1600&h=2133&fmt=auto&qlt=70&fmt.jp2.qlt=50&sm=c
+IMPORTANT: You MUST ALWAYS use tools in a SINGLE JSON object at the end of your output inside <tools></tools>, include only the tools you want to call.
+</instructions>
+<tools>
+{tool_desc}
+</tools> 
+"""

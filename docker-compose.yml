@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     environment:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - MODEL_NAME=${MODEL_NAME:-gemini-2.5-flash-image-preview}
+      - MODEL_NAME=${MODEL_NAME:-gemini-2.5-flash}
       - HOST=0.0.0.0
       - PORT=8000
     restart: unless-stopped

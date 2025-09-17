@@ -11,7 +11,7 @@ import requests
 from io import BytesIO
 from PIL import Image
 
-from chat_api import ChatChain, pil_image_to_bytes, bytes_to_pil_image
+from chat_api import ChatChain, pil_image_to_bytes, bytes_to_pil_image, system_prompt
 from google import genai
 
 app = FastAPI(title="AI Chat API", description="FastAPI server for AI chat with image support", version="1.0.0")
@@ -32,7 +32,7 @@ chat_sessions: Dict[str, ChatChain] = {}
 class ChatRequest(BaseModel):
     session_id: Optional[str] = None
     message: str
-    system_prompt: Optional[str] = "You are Lindy a personal style assistant from Lindex."
+    system_prompt: Optional[str] = system_prompt
     enable_image_generation: Optional[bool] = False
     generate_image: Optional[bool] = None
 
@@ -40,7 +40,7 @@ class ChatWithImagesRequest(BaseModel):
     session_id: Optional[str] = None
     message: str
     images: List[str]  # Base64 encoded images
-    system_prompt: Optional[str] = "You are Lindy a personal style assistant from Lindex."
+    system_prompt: Optional[str] = system_prompt
     enable_image_generation: Optional[bool] = False
     generate_image: Optional[bool] = None
 
@@ -70,8 +70,11 @@ class StyleGenerationResponse(BaseModel):
     prompt_used: str
 
 # Configuration - Use environment variables
-API_KEY = os.getenv('GOOGLE_API_KEY', 'AIzaSyAfMPu8d-uzzXQ-a2xaKxNMr_K9_oKDIVo')
+API_KEY = os.getenv('GOOGLE_API_KEY')
 MODEL = os.getenv('MODEL_NAME', 'gemini-2.5-flash-image-preview')
+
+if not API_KEY:
+    raise ValueError("GOOGLE_API_KEY environment variable is required")
 
 def get_genai_client():
     """Get Google GenAI client"""
